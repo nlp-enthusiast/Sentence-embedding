@@ -1,4 +1,7 @@
 python main.py \
+  --train_data_path "./data/AllNLI.tsv"\
+  --dev_data_path "./data/stsbenchmark.tsv"\
+  --test_data_path "./data/stsbenchmark.tsv"\
   --plm "./plm" \
   --save_path "./outputs" \
   --lr 2e-5 \

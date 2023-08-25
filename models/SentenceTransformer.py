@@ -53,11 +53,11 @@ class SentenceTransformer(nn.Sequential):
         self._model_config = {}
 
         if cache_folder is None:
+            # 获得环境变量
             cache_folder = os.getenv('SENTENCE_TRANSFORMERS_HOME')
             if cache_folder is None:
                 try:
                     from torch.hub import _get_torch_home
-
                     torch_cache_home = _get_torch_home()
                 except ImportError:
                     torch_cache_home = os.path.expanduser(
@@ -675,9 +675,10 @@ class SentenceTransformer(nn.Sequential):
 
         self.to(self._target_device)
 
+
         dataloaders = [dataloader for dataloader, _ in train_objectives]
 
-        # Use smart batching
+        # Use smart batching tokenizer
         for dataloader in dataloaders:
             dataloader.collate_fn = self.smart_batching_collate
 

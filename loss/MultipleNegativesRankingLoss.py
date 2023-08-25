@@ -49,10 +49,12 @@ class MultipleNegativesRankingLoss(nn.Module):
 
 
     def forward(self, sentence_features: Iterable[Dict[str, Tensor]], labels: Tensor):
+        # sentence_features 3*batch_size
         reps = [self.model(sentence_feature)['sentence_embedding'] for sentence_feature in sentence_features]
-        embeddings_a = reps[0]
-        embeddings_b = torch.cat(reps[1:])
-        scores = self.similarity_fct(embeddings_a, embeddings_b) * self.scale
+        embeddings_a = reps[0] # bs*hidden_dim
+
+        embeddings_b = torch.cat(reps[1:]) # 2bs*hidden_dim
+        scores = self.similarity_fct(embeddings_a, embeddings_b) * self.scale # bs*2bs
         labels = torch.tensor(range(len(scores)), dtype=torch.long, device=scores.device)  # Example a[i] should match with b[i]
         return self.cross_entropy_loss(scores, labels)
 

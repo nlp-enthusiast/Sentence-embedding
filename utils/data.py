@@ -26,6 +26,7 @@ class NoDuplicatesDataLoader:
             while len(batch) < self.batch_size:
                 example = self.train_examples[self.data_pointer]
 
+                # 判断是否有重复样本 如果有出现过的句子就跳过
                 valid_example = True
                 for text in example.texts:
                     if text.strip().lower() in texts_in_batch:
@@ -45,6 +46,7 @@ class NoDuplicatesDataLoader:
             yield self.collate_fn(batch) if self.collate_fn is not None else batch
 
     def __len__(self):
+        # 下舍整数
         return math.floor(len(self.train_examples) / self.batch_size)
 
 class SentenceEmbeddingDataset(Dataset):
@@ -57,6 +59,10 @@ class SentenceEmbeddingDataset(Dataset):
 
 
     def load_tsv_data(self):
+        '''
+        构造三元组 矛盾 蕴含 中性
+        :return:
+        '''
         data = dict()
         samples = []
         with open(self.path, 'rt', encoding='utf8') as f:

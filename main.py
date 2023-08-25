@@ -17,8 +17,9 @@ from utils import Dataset,NoDuplicatesDataLoader,EmbeddingSimilarityEvaluator
 def GetArgs():
     parser = argparse.ArgumentParser(description="sentence embedding argparse")
 
-    parser.add_argument("--data_path_prefix", type=str, default="data/")
-    parser.add_argument("--data_type", type=str, default="train,dev,test", )
+    parser.add_argument("--train_data_path", type=str, default="data/train.txt")
+    parser.add_argument("--dev_data_path", type=str, default="data/dev.txt")
+    parser.add_argument("--test_data_path", type=str, default="data/test.txt")
     parser.add_argument("--plm", type=str, help="the pretrained language model path or name", )
 
     # data hyper-parameters
@@ -43,21 +44,21 @@ def main():
     pooling_model=Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode='mean')
     model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
 
-    nli_dataset_path = 'data/AllNLI.tsv'
-    sts_dataset_path = 'data/stsbenchmark.tsv'
 
     logger.info("Read AllNLI train dataset")
-    train_dataset=Dataset(nli_dataset_path)
+    train_dataset=Dataset(args.train_data_path)
+
     logger.info("Train samples: {}".format(len(train_dataset)))
     logger.info(train_dataset[0])
     # Special data loader that avoid duplicates within a batch
     train_dataloader = NoDuplicatesDataLoader(train_dataset.samples, batch_size=args.train_batch_size)
+
     # Our training loss
     train_loss = MultipleNegativesRankingLoss(model)
 
     # Read STSbenchmark dataset and use it as development set
     logger.info("Read STSbenchmark dev dataset")
-    dev_dataset=Dataset(sts_dataset_path,mode="dev")
+    dev_dataset=Dataset(args.dev_data_path,mode="dev")
 
 
     dev_evaluator = EmbeddingSimilarityEvaluator.from_input_examples(dev_dataset.samples, batch_size=args.dev_batch_size,
@@ -83,9 +84,9 @@ def main():
     # Load the stored model and evaluate its performance on STS benchmark dataset
     #
     ##############################################################################
-    test_dataset=Dataset(sts_dataset_path,mode="test")
+    test_dataset=Dataset(args.test_data_path,mode="test")
 
-    model = Transformer(args.save_path)
+    model = SentenceTransformer(args.save_path)
     test_evaluator = EmbeddingSimilarityEvaluator.from_input_examples(test_dataset.samples, batch_size=args.train_batch_size,
                                                                       name='sts-test')
     test_evaluator(model, output_path=args.save_path)
