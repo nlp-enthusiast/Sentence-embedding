@@ -96,7 +96,6 @@ class Transformer(nn.Module):
 
             hidden_states = output_states[all_layer_idx]
             features.update({'all_layer_embeddings': hidden_states})
-
         return features
 
     @staticmethod

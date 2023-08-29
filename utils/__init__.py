@@ -1,17 +1,21 @@
-from .data import SentenceEmbeddingDataset as Dataset
-from .data import NoDuplicatesDataLoader
+from .data import SentenceEmbeddingDataset, TextRankingDataset,NoDuplicatesDataLoader
 from .evaluator import EmbeddingSimilarityEvaluator,SentenceEvaluator
 
+
+
 import requests
-from torch import Tensor, device
 from typing import List, Callable
 from tqdm.autonotebook import tqdm
 import sys
 import importlib
 import os
-import torch
+
 from typing import Dict, Optional, Union
 from pathlib import Path
+
+import torch
+from torch import Tensor, device
+from torch.utils.data import DataLoader
 
 import huggingface_hub
 from huggingface_hub.constants import HUGGINGFACE_HUB_CACHE
