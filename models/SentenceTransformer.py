@@ -190,8 +190,9 @@ class SentenceTransformer(nn.Sequential):
             features = batch_to_device(features, device)
 
             with torch.no_grad():
+                print(self.forward)
+                exit()
                 out_features = self.forward(features)
-
                 if output_value == 'token_embeddings':
                     embeddings = []
                     for token_emb, attention in zip(out_features[output_value], out_features['attention_mask']):

@@ -4,6 +4,7 @@
 #  --test_data_path "./data/stsbenchmark.tsv"\
 #  --model_name "./plm" \
 #  --save_path "./outputs" \
+#  --dev --test \
 #  --lr 2e-5 \
 #  --num_epochs 1 \
 #  --train_batch_size 128 \
@@ -23,6 +24,7 @@ python main.py \
   --lr 2e-5 \
   --num_epochs 10 \
   --warmup_steps 1000 \
-  --train_batch_size 64 \
-  --dev_batch_size 128 \
-  --max_seq_length 300
+  --train_batch_size 32 \
+  --dev_batch_size 32 \
+  --max_seq_length 300 \
+  --use_amp
